@@ -1,7 +1,7 @@
 ﻿namespace ConsoleSelectableMenu.Infrastructure
 {
     /// <summary>
-    /// Represents a node in a <see cref="SelectableMenu"/>. This class cannot be inherited.
+    /// Represents a node in a <see cref="MenuItemCollection"/>. This class cannot be inherited.
     /// </summary>
     internal sealed class MenuNode
     {
@@ -10,7 +10,7 @@
         /// Initializes a new instance of the <see cref="MenuNode"/> class, containing the specified value.
         /// </summary>
         /// <param name="item"></param>
-        public MenuNode(SelectableMenuItem item)
+        public MenuNode(MenuItem item)
         {
             Value = item;
         }
@@ -20,15 +20,15 @@
         /// <summary>
         /// Gets the value contained in the node.
         /// </summary>
-        public SelectableMenuItem Value { get; private set; }
+        public MenuItem Value { get; private set; }
 
         /// <summary>
-        /// Gets the next node in the <see cref="SelectableMenu"/>.
+        /// Gets the next node in the <see cref="MenuItemCollection"/>.
         /// </summary>
         public MenuNode? Next { get; internal set; }
 
         /// <summary>
-        /// Gets the previous node in the <see cref="SelectableMenu"/>.
+        /// Gets the previous node in the <see cref="MenuItemCollection"/>.
         /// </summary>
         public MenuNode? Previous { get; internal set; }
         #endregion

@@ -9,11 +9,14 @@ internal class Program
     {
         Console.CursorVisible = false;
 
-        var homeItem = new SelectableMenuItem { InnerText = "Home" };
-        var helpItem = new SelectableMenuItem { InnerText = "Help" };
-        var exitItem = new SelectableMenuItem { InnerText = "Exit" };
+        var homeItem = new MenuItem { InnerText = "Home" };
+        var helpItem = new MenuItem { InnerText = "Help" };
+        var exitItem = new MenuItem { InnerText = "Exit" };
 
-        var menu = new SelectableMenu { homeItem, helpItem, exitItem };
+        var menu = new SelectableMenu();
+        menu.Items.Add(homeItem);
+        menu.Items.Add(helpItem);
+        menu.Items.Add(exitItem);
         menu.Render();
 
         while (true)

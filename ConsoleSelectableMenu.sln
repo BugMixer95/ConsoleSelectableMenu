@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleSelectableMenu.Core", "src\ConsoleSelectableMenu.Core\ConsoleSelectableMenu.Core.csproj", "{5C164B41-6B06-44B0-8340-25BDA250A532}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleSelectableMenu.Core", "src\ConsoleSelectableMenu.Core\ConsoleSelectableMenu.Core.csproj", "{5C164B41-6B06-44B0-8340-25BDA250A532}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleSelectableMenu.TestConsole", "src\ConsoleSelectableMenu.TestConsole\ConsoleSelectableMenu.TestConsole.csproj", "{C9EEE9E7-0042-4920-A1B6-AF5A5F94EA88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleSelectableMenu.TestConsole", "src\ConsoleSelectableMenu.TestConsole\ConsoleSelectableMenu.TestConsole.csproj", "{C9EEE9E7-0042-4920-A1B6-AF5A5F94EA88}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FFD80EC4-2AA0-4E84-AC6E-1A62F1A6E52F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleSelectableMenu.Tests", "src\ConsoleSelectableMenu.Tests.Unit\ConsoleSelectableMenu.Tests.csproj", "{B48B6130-C127-46B4-BEDF-965917145ABE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +25,16 @@ Global
 		{C9EEE9E7-0042-4920-A1B6-AF5A5F94EA88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9EEE9E7-0042-4920-A1B6-AF5A5F94EA88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9EEE9E7-0042-4920-A1B6-AF5A5F94EA88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B48B6130-C127-46B4-BEDF-965917145ABE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B48B6130-C127-46B4-BEDF-965917145ABE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B48B6130-C127-46B4-BEDF-965917145ABE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B48B6130-C127-46B4-BEDF-965917145ABE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B48B6130-C127-46B4-BEDF-965917145ABE} = {FFD80EC4-2AA0-4E84-AC6E-1A62F1A6E52F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F580845F-CA5E-428F-A36D-5E8EC2F361A0}

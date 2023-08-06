@@ -3,13 +3,13 @@
     /// <summary>
     /// Represents a menu item.
     /// </summary>
-    public class SelectableMenuItem
+    public class MenuItem
     {
         #region Constructors
         /// <summary>
-        /// Initializes a new instance of the <see cref="SelectableMenu"/> class.
+        /// Initializes a new instance of the <see cref="MenuItem"/> class.
         /// </summary>
-        public SelectableMenuItem()
+        public MenuItem()
         {
             InnerText = string.Empty;
         }
