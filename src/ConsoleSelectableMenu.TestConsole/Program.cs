@@ -10,7 +10,7 @@ internal class Program
         Console.CursorVisible = false;
 
         var homeItem = new MenuItem { InnerText = "Home" };
-        var helpItem = new MenuItem { InnerText = "Help" };
+        var helpItem = new MenuItem { InnerText = "Help", ActionDescription = "Show help." };
         var exitItem = new MenuItem
         {
             InnerText = "Exit",

@@ -72,10 +72,13 @@ namespace ConsoleSelectableMenu
         /// <see langword="true"/> will clear the console.</param>
         public void Render(bool clear = true)
         {
-            if (clear)
-                Console.Clear();
+            if (!Console.IsOutputRedirected)
+            {
+                if (clear)
+                    Console.Clear();
 
-            Console.CursorTop = 0;
+                Console.CursorTop = 0;
+            }
 
             BeforeRendering?.Invoke();
 
@@ -90,10 +93,9 @@ namespace ConsoleSelectableMenu
         /// </summary>
         private void RenderMenuItems()
         {
-            //if (Console.CursorTop != 0)
-            //    Console.CursorTop -= Items.Count;
-
-            var startCursorPositionTop = Console.CursorTop;
+            int startCursorPositionTop = 0;
+            if (!Console.IsOutputRedirected) 
+                startCursorPositionTop = Console.CursorTop;
 
             foreach (MenuItem item in Items)
             {
@@ -123,9 +125,18 @@ namespace ConsoleSelectableMenu
             }
 
             // renders selected menu item description if such exists
-            if (Items.Selected!.ActionDescription is { })
+            if (Items.Selected?.ActionDescription is { })
             {
                 Console.WriteLine();
+
+                // clearing previous description
+                Console.Write(new string(
+                    c: ' ',
+                    count: Console.IsOutputRedirected ? Constants.EmptyStringLength : Console.WindowWidth
+                    ));
+
+                if (!Console.IsOutputRedirected)
+                    Console.CursorLeft = 0;
 
                 Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.WriteLine(Items.Selected!.ActionDescription);
@@ -134,10 +145,18 @@ namespace ConsoleSelectableMenu
             else
             {
                 Console.WriteLine();
-                Console.WriteLine(new string(' ', Console.WindowWidth));
+
+                if (!Console.IsOutputRedirected)
+                    Console.CursorLeft = 0;
+
+                Console.WriteLine(new string(
+                    c: ' ', 
+                    count: Console.IsOutputRedirected ? Constants.EmptyStringLength : Console.WindowWidth
+                    ));
             }
 
-            Console.CursorTop = startCursorPositionTop;
+            if (!Console.IsOutputRedirected) 
+                Console.CursorTop = startCursorPositionTop;
         }
 
         /// <summary>
