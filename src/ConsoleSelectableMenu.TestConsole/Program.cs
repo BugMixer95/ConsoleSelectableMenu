@@ -5,24 +5,26 @@ namespace ConsoleSelectableMenu.TestConsole;
 
 internal class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         Console.CursorVisible = false;
 
         var homeItem = new MenuItem { InnerText = "Home" };
         var helpItem = new MenuItem { InnerText = "Help" };
-        var exitItem = new MenuItem { InnerText = "Exit" };
+        var exitItem = new MenuItem
+        {
+            InnerText = "Exit",
+            Action = () =>
+            {
+                Environment.Exit(0);
+            }
+        };
 
         var menu = new SelectableMenu();
         menu.Items.Add(homeItem);
         menu.Items.Add(helpItem);
         menu.Items.Add(exitItem);
-        menu.Render();
 
-        while (true)
-        {
-            var key = Console.ReadKey();
-            menu.OnKeyPressed(null, new SelectableMenuEventArgs(key));
-        }
+        await menu.StartAsync();
     }
 }

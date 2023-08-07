@@ -1,7 +1,7 @@
 ﻿using ConsoleSelectableMenu.Infrastructure;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ConsoleSelectableMenu
 {
@@ -22,9 +22,70 @@ namespace ConsoleSelectableMenu
         /// </summary>
         public MenuItemCollection Items { get; }
 
+        /// <summary>
+        /// Occurs when any key is pressed.
+        /// </summary>
         public event EventHandler<SelectableMenuEventArgs>? KeyPressed = null;
 
-        public void OnKeyPressed(object? sender, SelectableMenuEventArgs args)
+        /// <summary>
+        /// Asynchronously renders initialized menu and starts listening for pressed keys.
+        /// </summary>
+        public async Task StartAsync(CancellationToken token = default)
+        {
+            Render(true);
+            await ListenForKey(token);
+        }
+
+        /// <summary>
+        /// Prints all the menu content to the console.
+        /// </summary>
+        /// <param name="clear">Indicates whether the console should be cleared before rendering.
+        /// <see langword="true"/> will clear the console.</param>
+        public void Render(bool clear = true)
+        {
+            if (clear)
+                Console.Clear();
+
+            if (Console.CursorTop != 0)
+                Console.CursorTop -= Items.Count;
+
+            foreach (MenuItem item in Items)
+            {
+                if (item.Equals(Items.Selected))
+                {
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                }
+
+                Console.WriteLine(item.InnerText);
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+        }
+
+        #region Assistants
+        /// <summary>
+        /// Asynchronously listens for a pressed key.
+        /// </summary>
+        private Task ListenForKey(CancellationToken token = default)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    if (Console.KeyAvailable)
+                    {
+                        var key = Console.ReadKey(false);
+                        ProcessPressedKey(this, new SelectableMenuEventArgs(key));
+                    }
+                }
+            }, token);
+        }
+
+        /// <summary>
+        /// Performs an action based on a pressed key.
+        /// </summary>
+        private void ProcessPressedKey(object? sender, SelectableMenuEventArgs args)
         {
             KeyPressed?.Invoke(sender, args);
 
@@ -40,30 +101,14 @@ namespace ConsoleSelectableMenu
                     Render(false);
                     break;
 
+                case ConsoleKey.Enter:
+                    Items.Selected!.Action?.Invoke();
+                    break;
+
                 default:
                     break;
             }
         }
-
-        public void Render(bool clear = true)
-        {
-            if (clear)
-                Console.Clear();
-
-            foreach (MenuItem item in Items)
-            {
-                if (item.Equals(Items.Selected))
-                {
-                    Console.BackgroundColor = ConsoleColor.White;
-                    Console.ForegroundColor = ConsoleColor.Black;
-                }
-
-                Console.WriteLine(item.InnerText);
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-
-            Console.CursorTop -= Items.Count;
-        }
+        #endregion
     }
 }
