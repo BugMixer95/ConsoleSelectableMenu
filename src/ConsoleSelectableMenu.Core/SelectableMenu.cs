@@ -5,8 +5,15 @@ using System.Threading.Tasks;
 
 namespace ConsoleSelectableMenu
 {
+    /// <summary>
+    /// Represents a menu with selectable items.
+    /// </summary>
     public class SelectableMenu
     {
+        #region Private Members
+        private readonly SelectableMenuOptions _options;
+        #endregion
+
         #region Constructor
         /// <summary>
         /// Initializes a new instance of the <see cref="SelectableMenu"/> class.
@@ -14,6 +21,17 @@ namespace ConsoleSelectableMenu
         public SelectableMenu()
         {
             Items = new MenuItemCollection();
+            _options = SelectableMenuOptions.GlobalOptions;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SelectableMenu"/> class with specified options.
+        /// </summary>
+        /// <param name="options"></param>
+        public SelectableMenu(SelectableMenuOptions options)
+            : this()
+        {
+            _options = options;
         }
         #endregion
 
@@ -26,6 +44,17 @@ namespace ConsoleSelectableMenu
         /// Occurs when any key is pressed.
         /// </summary>
         public event EventHandler<SelectableMenuEventArgs>? KeyPressed = null;
+
+        /// <summary>
+        /// Occurs before rendering menu items. <br />
+        /// <i>Hint: use it for adding headers for the menu.</i>
+        /// </summary>
+        public event Action? BeforeRendering = null;
+
+        /// <summary>
+        /// Occurs after rendering menu items.
+        /// </summary>
+        public event Action? AfterRendering = null;
 
         /// <summary>
         /// Asynchronously renders initialized menu and starts listening for pressed keys.
@@ -46,24 +75,71 @@ namespace ConsoleSelectableMenu
             if (clear)
                 Console.Clear();
 
-            if (Console.CursorTop != 0)
-                Console.CursorTop -= Items.Count;
+            Console.CursorTop = 0;
 
-            foreach (MenuItem item in Items)
-            {
-                if (item.Equals(Items.Selected))
-                {
-                    Console.BackgroundColor = ConsoleColor.White;
-                    Console.ForegroundColor = ConsoleColor.Black;
-                }
+            BeforeRendering?.Invoke();
 
-                Console.WriteLine(item.InnerText);
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.ForegroundColor = ConsoleColor.White;
-            }
+            RenderMenuItems();
+
+            AfterRendering?.Invoke();
         }
 
         #region Assistants
+        /// <summary>
+        /// Renders menu items according to the menu options.
+        /// </summary>
+        private void RenderMenuItems()
+        {
+            //if (Console.CursorTop != 0)
+            //    Console.CursorTop -= Items.Count;
+
+            var startCursorPositionTop = Console.CursorTop;
+
+            foreach (MenuItem item in Items)
+            {
+                // marking menu item as selected according to the menu options
+                if (item.Equals(Items.Selected))
+                {
+                    switch (_options.SelectionType)
+                    {
+                        case SelectionType.BackgroundFilled:
+                            Console.BackgroundColor = ConsoleColor.White;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            break;
+
+                        case SelectionType.Arrowed:
+                            Console.Write(Constants.ArrowedSelection);
+                            break;
+                    }
+                }
+
+                // rendering menu item inner text
+                Console.Write(item.InnerText);
+                Console.WriteLine(Constants.MenuItemTail);
+
+                // returning console style to its initial state
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+
+            // renders selected menu item description if such exists
+            if (Items.Selected!.ActionDescription is { })
+            {
+                Console.WriteLine();
+
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.WriteLine(Items.Selected!.ActionDescription);
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            else
+            {
+                Console.WriteLine();
+                Console.WriteLine(new string(' ', Console.WindowWidth));
+            }
+
+            Console.CursorTop = startCursorPositionTop;
+        }
+
         /// <summary>
         /// Asynchronously listens for a pressed key.
         /// </summary>

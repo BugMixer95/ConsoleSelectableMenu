@@ -17,13 +17,29 @@ internal class Program
             Action = () =>
             {
                 Environment.Exit(0);
-            }
+            },
+            ActionDescription = "Exit the program."
         };
 
         var menu = new SelectableMenu();
+        
         menu.Items.Add(homeItem);
         menu.Items.Add(helpItem);
         menu.Items.Add(exitItem);
+
+        menu.BeforeRendering += () =>
+        {
+            Console.Write("This is the demonstration of ");
+            
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("ConsoleSelectableMenu");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.WriteLine(" library.");
+            Console.WriteLine("(c) 2023.");
+
+            Console.WriteLine();
+        };
 
         await menu.StartAsync();
     }

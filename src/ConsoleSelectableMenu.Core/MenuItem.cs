@@ -24,6 +24,11 @@ namespace ConsoleSelectableMenu
         public string InnerText { get; set; }
 
         /// <summary>
+        /// The description of menu item action.
+        /// </summary>
+        public string? ActionDescription { get; set; }
+
+        /// <summary>
         /// Action that would be executed when menu item is selected and activated with Enter key.
         /// </summary>
         public Action? Action { get; set; }
