@@ -111,6 +111,52 @@ public class MenuItemCollectionTests
     }
 
     [Fact]
+    internal void Add_SetsParentMenuToItem_OnCall()
+    {
+        // arrange
+        var menu = new SelectableMenu();
+        var collection = menu.Items;
+
+        var item = new MenuItem();
+
+        // act
+        menu.Items.Add(item);
+
+        // assert
+        item.ParentMenu.Should().Be(menu);
+    }
+
+    [Fact]
+    internal void Add_SetsParentMenuToItemAsNull_OnInitializingCollectionSeparately()
+    {
+        // arrange
+        var collection = new MenuItemCollection();
+        var item = new MenuItem();
+
+        // act
+        collection.Add(item);
+
+        // assert
+        item.ParentMenu.Should().BeNull();
+    }
+
+    [Fact]
+    internal void Add_ThrowsException_WhenAddingItemWithParentMenu()
+    {
+        // arrange
+        var firstMenu = new SelectableMenu();
+        var secondMenu = new SelectableMenu();
+        var item = new MenuItem();
+
+        // act
+        firstMenu.Items.Add(item);
+        Action act = () => secondMenu.Items.Add(item);
+
+        // assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [Fact]
     internal void Remove_RemovesItemAndReturnsTrue_OnCall()
     {
         // arrange
@@ -456,5 +502,30 @@ public class MenuItemCollectionTests
         // assert
         collection.Count.Should().Be(2);
         count.Should().Be(collection.Count);
+    }
+
+    [Fact]
+    internal void ParentMenu_IsNull_OnInitializingCollectionSeparately()
+    {
+        // arrange
+        var collection = new MenuItemCollection();
+
+        // act
+
+        // assert
+        collection.ParentMenu.Should().BeNull();
+    }
+
+    [Fact]
+    internal void ParentMenu_IsNotNull_OnInitializingMenu()
+    {
+        // arrange
+        var menu = new SelectableMenu();
+        var collection = menu.Items;
+
+        // act
+
+        // assert
+        collection.ParentMenu.Should().Be(menu);
     }
 }

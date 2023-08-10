@@ -49,6 +49,11 @@ namespace ConsoleSelectableMenu
         public bool IsEmpty { get => _count == 0; }
 
         /// <summary>
+        /// Gets the parent menu for the current collection.
+        /// </summary>
+        public SelectableMenu? ParentMenu { get; internal set; }
+
+        /// <summary>
         /// Gets the currently selected menu item.
         /// </summary>
         public MenuItem? Selected
@@ -61,6 +66,7 @@ namespace ConsoleSelectableMenu
         /// </summary>
         /// <param name="item">The menu item to add to the menu.</param>
         /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public void Add(MenuItem item)
         {
             if (item is null)
@@ -85,6 +91,12 @@ namespace ConsoleSelectableMenu
                 _head.Previous!.Next = node;
                 _head.Previous = node;
             }
+
+            // sets parent menu to the added menu item
+            if (item.ParentMenu is { } && item.ParentMenu != ParentMenu)
+                throw new ArgumentException("Input menu item should not have a parent menu.");
+
+            item.ParentMenu = ParentMenu;
 
             _count++;
         }

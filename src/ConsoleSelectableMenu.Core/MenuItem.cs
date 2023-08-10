@@ -20,6 +20,11 @@ namespace ConsoleSelectableMenu
         #endregion
 
         /// <summary>
+        /// Gets the parent <see cref="SelectableMenu"/> instance, which the menu item is assigned to.
+        /// </summary>
+        public SelectableMenu? ParentMenu { get; internal set; }
+
+        /// <summary>
         /// The text to display in the console.
         /// </summary>
         public string InnerText { get; set; }

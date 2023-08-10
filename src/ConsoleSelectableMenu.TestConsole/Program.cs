@@ -10,7 +10,7 @@ internal class Program
         Console.CursorVisible = false;
 
         var homeItem = new MenuItem { InnerText = "Home" };
-        var helpItem = new MenuItem { InnerText = "Help", ActionDescription = "Show help.", Enabled = false };
+        var helpItem = new MenuItem { InnerText = "Help", ActionDescription = "Show help.", Enabled = true };
         var aboutItem = new MenuItem { InnerText = "About", Enabled = false };
         var optionsItems = new MenuItem { InnerText = "Options" };
         var exitItem = new MenuItem
@@ -45,6 +45,31 @@ internal class Program
             Console.WriteLine();
         };
 
-        await menu.StartAsync();
+        // second menu
+        var secondMenu = new SelectableMenu(new SelectableMenuOptions { SelectionType = SelectionType.Arrowed });
+
+        secondMenu.BeforeRendering += () =>
+        {
+            Console.WriteLine();
+        };
+
+        var backItem = new MenuItem
+        {
+            InnerText = "Back",
+            Action = () =>
+            {
+                secondMenu.SwitchTo(menu);
+            },
+            ActionDescription = "Go back to the previous menu."
+        };
+
+        secondMenu.Items.Add(backItem);
+
+        helpItem.Action = () =>
+        {
+            menu.SwitchTo(secondMenu);
+        };
+
+        await menu.Start();
     }
 }

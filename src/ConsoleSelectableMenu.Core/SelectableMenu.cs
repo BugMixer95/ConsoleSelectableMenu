@@ -21,6 +21,8 @@ namespace ConsoleSelectableMenu
         public SelectableMenu()
         {
             Items = new MenuItemCollection();
+            Items.ParentMenu = this;
+
             _options = SelectableMenuOptions.GlobalOptions;
         }
 
@@ -41,6 +43,12 @@ namespace ConsoleSelectableMenu
         public MenuItemCollection Items { get; }
 
         /// <summary>
+        /// Indicates whether switching to another menu has been requested or not.
+        /// </summary>
+        internal bool IsSwitchRequested { get; set; } = false;
+
+        #region Events
+        /// <summary>
         /// Occurs when any key is pressed.
         /// </summary>
         public event EventHandler<SelectableMenuEventArgs>? KeyPressed = null;
@@ -55,14 +63,16 @@ namespace ConsoleSelectableMenu
         /// Occurs after rendering menu items.
         /// </summary>
         public event Action? AfterRendering = null;
+        #endregion
 
         /// <summary>
-        /// Asynchronously renders initialized menu and starts listening for pressed keys.
+        /// Starts menu processing from the current menu instance.
         /// </summary>
-        public async Task StartAsync(CancellationToken token = default)
+        /// <returns></returns>
+        public Task Start()
         {
-            Render(true);
-            await ListenForKey(token);
+            SwitchTo(this);
+            return MenuDirector.Instance.ProcessMenu();
         }
 
         /// <summary>
@@ -87,7 +97,43 @@ namespace ConsoleSelectableMenu
             AfterRendering?.Invoke();
         }
 
+        /// <summary>
+        /// Switches to the specified menu.
+        /// </summary>
+        /// <param name="menu">The menu to switch to.</param>
+        public void SwitchTo(SelectableMenu menu)
+        {
+            MenuDirector.Instance.SwitchMenu(menu);
+        }
+
         #region Assistants
+        /// <summary>
+        /// Asynchronously renders initialized menu and starts listening for pressed keys.
+        /// </summary>
+        internal async Task StartAsync(CancellationToken token = default)
+        {
+            Render(true);
+            await ListenForKey(token);
+        }
+
+        /// <summary>
+        /// Asynchronously listens for a pressed key.
+        /// </summary>
+        internal Task ListenForKey(CancellationToken token = default)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                while (!token.IsCancellationRequested && !IsSwitchRequested)
+                {
+                    if (Console.KeyAvailable)
+                    {
+                        var key = Console.ReadKey(false);
+                        ProcessPressedKey(this, new SelectableMenuEventArgs(key));
+                    }
+                }
+            }, token);
+        }
+
         /// <summary>
         /// Renders menu items according to the menu options.
         /// </summary>
@@ -162,24 +208,6 @@ namespace ConsoleSelectableMenu
 
             if (!Console.IsOutputRedirected) 
                 Console.CursorTop = startCursorPositionTop;
-        }
-
-        /// <summary>
-        /// Asynchronously listens for a pressed key.
-        /// </summary>
-        private Task ListenForKey(CancellationToken token = default)
-        {
-            return Task.Factory.StartNew(() =>
-            {
-                while (!token.IsCancellationRequested)
-                {
-                    if (Console.KeyAvailable)
-                    {
-                        var key = Console.ReadKey(false);
-                        ProcessPressedKey(this, new SelectableMenuEventArgs(key));
-                    }
-                }
-            }, token);
         }
 
         /// <summary>
