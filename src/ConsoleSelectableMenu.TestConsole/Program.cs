@@ -10,7 +10,9 @@ internal class Program
         Console.CursorVisible = false;
 
         var homeItem = new MenuItem { InnerText = "Home" };
-        var helpItem = new MenuItem { InnerText = "Help", ActionDescription = "Show help." };
+        var helpItem = new MenuItem { InnerText = "Help", ActionDescription = "Show help.", Enabled = false };
+        var aboutItem = new MenuItem { InnerText = "About", Enabled = false };
+        var optionsItems = new MenuItem { InnerText = "Options" };
         var exitItem = new MenuItem
         {
             InnerText = "Exit",
@@ -21,16 +23,18 @@ internal class Program
             ActionDescription = "Exit the program."
         };
 
-        var menu = new SelectableMenu();
-        
+        var menu = new SelectableMenu(new SelectableMenuOptions { SelectionType = SelectionType.Arrowed });
+
         menu.Items.Add(homeItem);
         menu.Items.Add(helpItem);
+        menu.Items.Add(aboutItem);
+        menu.Items.Add(optionsItems);
         menu.Items.Add(exitItem);
 
         menu.BeforeRendering += () =>
         {
             Console.Write("This is the demonstration of ");
-            
+
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("ConsoleSelectableMenu");
             Console.ForegroundColor = ConsoleColor.White;

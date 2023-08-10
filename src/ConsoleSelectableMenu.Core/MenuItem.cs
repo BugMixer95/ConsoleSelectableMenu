@@ -15,6 +15,7 @@ namespace ConsoleSelectableMenu
         {
             InnerText = string.Empty;
             Action = null;
+            Enabled = true;
         }
         #endregion
 
@@ -32,5 +33,10 @@ namespace ConsoleSelectableMenu
         /// Action that would be executed when menu item is selected and activated with Enter key.
         /// </summary>
         public Action? Action { get; set; }
+
+        /// <summary>
+        /// The value indicating whether the menu item is enabled for selection or not.
+        /// </summary>
+        public bool Enabled { get; set; }
     }
 }

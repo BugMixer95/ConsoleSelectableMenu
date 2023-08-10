@@ -210,12 +210,27 @@ namespace ConsoleSelectableMenu
             if (_count == 0)
                 return;
 
-            _ = direction switch
+            switch (direction)
             {
-                MoveDirection.Previous => _selected = _selected!.Previous,
-                MoveDirection.Next => _selected = _selected!.Next,
-                _ => throw new ArgumentException("Wait, what? How such could even happen?")
-            };
+                case MoveDirection.Previous:
+                    do
+                    {
+                        _selected = _selected!.Previous;
+                    }
+                    while (_selected!.Value.Enabled == false);
+                    break;
+
+                case MoveDirection.Next:
+                    do
+                    {
+                        _selected = _selected!.Next;
+                    }
+                    while (_selected!.Value.Enabled == false);
+                    break;
+
+                default:
+                    throw new ArgumentException("Wait, what? How such could even happen?");
+            }
         }
         #endregion
     }

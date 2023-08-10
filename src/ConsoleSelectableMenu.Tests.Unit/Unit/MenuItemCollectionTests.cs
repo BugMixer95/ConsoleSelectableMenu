@@ -304,6 +304,7 @@ public class MenuItemCollectionTests
         collection.Selected.Should().Be(thirdItem);
     }
 
+    [Fact]
     internal void MoveSelection_SelectsNextItem_OnUsingNextDirection()
     {
         // arrange
@@ -319,6 +320,90 @@ public class MenuItemCollectionTests
         // assert
         collection.Selected.Should().NotBeNull();
         collection.Selected.Should().Be(secondItem);
+    }
+
+    [Fact]
+    internal void MoveSelection_SkipsDisabledItem_OnUsingPreviousDirection()
+    {
+        // arrange
+        var firstItem = new MenuItem { InnerText = "first" };
+        var secondItem = new MenuItem { InnerText = "second" };
+        var thirdItem = new MenuItem { InnerText = "third", Enabled = false };
+
+        var collection = new MenuItemCollection { firstItem, secondItem, thirdItem };
+
+        // act
+        collection.MoveSelection(MoveDirection.Previous);
+
+        // assert
+        collection.Selected.Should().Be(secondItem);
+    }
+
+    [Fact]
+    internal void MoveSelection_SkipsDisabledItem_OnUsingNextDirection()
+    {
+        // arrange
+        var firstItem = new MenuItem { InnerText = "first" };
+        var secondItem = new MenuItem { InnerText = "second", Enabled = false };
+        var thirdItem = new MenuItem { InnerText = "third" };
+
+        var collection = new MenuItemCollection { firstItem, secondItem, thirdItem };
+
+        // act
+        collection.MoveSelection(MoveDirection.Next);
+
+        // assert
+        collection.Selected.Should().Be(thirdItem);
+    }
+
+    [Fact]
+    internal void MoveSelection_SkipsMultipleDisabledItems_OnUsingPreviousDirection()
+    {
+        // arrange
+        var firstItem = new MenuItem { InnerText = "first" };
+        var secondItem = new MenuItem { InnerText = "second" };
+        var thirdItem = new MenuItem { InnerText = "third", Enabled = false };
+        var fourthItem = new MenuItem { InnerText = "fourth", Enabled = false };
+        var fifthItem = new MenuItem { InnerText = "fifth" };
+        var sixthItem = new MenuItem { InnerText = "sixth", Enabled = false };
+
+        var collection = new MenuItemCollection { firstItem, secondItem, thirdItem, fourthItem, fifthItem, sixthItem };
+
+        // act
+        collection.MoveSelection(MoveDirection.Previous);
+        var firstResult = collection.Selected;
+
+        collection.MoveSelection(MoveDirection.Previous);
+        var secondResult = collection.Selected;
+
+        // assert
+        firstResult.Should().Be(fifthItem);
+        secondResult.Should().Be(secondItem);
+    }
+
+    [Fact]
+    internal void MoveSelection_SkipsMultipleDisabledItems_OnUsingNextDirection()
+    {
+        // arrange
+        var firstItem = new MenuItem { InnerText = "first" };
+        var secondItem = new MenuItem { InnerText = "second", Enabled = false };
+        var thirdItem = new MenuItem { InnerText = "third", Enabled = false };
+        var fourthItem = new MenuItem { InnerText = "fourth" };
+        var fifthItem = new MenuItem { InnerText = "fifth", Enabled = false };
+        var sixthItem = new MenuItem { InnerText = "sixth" };
+
+        var collection = new MenuItemCollection { firstItem, secondItem, thirdItem, fourthItem, fifthItem, sixthItem };
+
+        // act
+        collection.MoveSelection(MoveDirection.Next);
+        var firstResult = collection.Selected;
+
+        collection.MoveSelection(MoveDirection.Next);
+        var secondResult = collection.Selected;
+
+        // assert
+        firstResult.Should().Be(fourthItem);
+        secondResult.Should().Be(sixthItem);
     }
 
     [Fact]

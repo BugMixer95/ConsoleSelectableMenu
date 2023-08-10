@@ -115,6 +115,11 @@ namespace ConsoleSelectableMenu
                     }
                 }
 
+                if (!item.Enabled)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                }
+
                 // rendering menu item inner text
                 Console.Write(item.InnerText);
                 Console.WriteLine(Constants.MenuItemTail);
